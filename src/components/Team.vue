@@ -4,16 +4,16 @@
       <v-container>
         <v-layout>
           <v-flex xs11>
-            <v-layout v-if="!edited" wrap>
+            <v-layout v-if="!edited" row wrap>
               <v-flex xs12>
-                {{ person.name }}
+                {{ team.name }}
               </v-flex>
               <v-flex xs12>
                 <v-chip
-                  v-for="skill in person.skills"
-                  :key="skill"
+                  v-for="person in team.people"
+                  :key="person.id"
                 >
-                  {{ skill }}
+                  {{ person.name }}
                 </v-chip>
               </v-flex>
             </v-layout>
@@ -21,27 +21,11 @@
               <v-flex xs12>
                 <v-text-field
                   label="Имя"
-                  v-model="person.name"
+                  v-model="team.name"
                 ></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-select
-                  v-model="person.skills"
-                  :items="[]"
-                  label="Навыки"
-                  chips
-                  tags
-                >
-                  <template slot="selection" slot-scope="data">
-                    <v-chip
-                      :key="JSON.stringify(data.item)"
-                      class="chip--select-multi"
-                      @input="data.parent.selectItem(data.item)"
-                    >
-                      {{ data.item }}
-                    </v-chip>
-                  </template>
-                </v-select>
+                <people-select v-model="team.people"></people-select>
               </v-flex>
             </v-layout>
           </v-flex>
@@ -61,7 +45,7 @@
               fab
               icon
               :loading="loading"
-              @click="deletePerson"
+              @click="deleteTeam"
             >
               <v-icon>delete</v-icon>
             </v-btn>
@@ -71,7 +55,7 @@
               fab
               icon
               :loading="loading"
-              @click="createPerson"
+              @click="createTeam"
             >
               <v-icon>save</v-icon>
             </v-btn>
@@ -81,7 +65,7 @@
               fab
               icon
               :loading="loading"
-              @click="updatePerson"
+              @click="updateTeam"
             >
               <v-icon>done</v-icon>
             </v-btn>
@@ -95,74 +79,78 @@
 
 <script>
   import { axios } from '../http'
+  import People from "./People";
+  import PeopleSelect from './PeopleSelect'
 
   export default {
+    components: { People, PeopleSelect },
     props: {
       value: {
         type: Object,
         required: true,
       }
     },
-    name: "person",
+    name: "team",
     data() {
       return {
-        person: this.value,
+        team: this.value,
         edited: false,
         loading: false,
         created: false,
       }
     },
     mounted() {
-      if (Object.keys(this.person).length === 0) {
+      if (Object.keys(this.team).length === 0) {
         this.edited = true
         this.created = true
-        this.person = {name: '', skills: []}
+        this.team = {name: '', people: []}
       }
     },
     methods: {
-      createPerson() {
+      createTeam() {
         this.loading = true
         axios.post(
-          `people`,
+          `teams`,
           {
-            name: this.person.name,
-            skills: this.person.skills
+            name: this.team.name,
+            people: this.team.people.map(person => person._id)
           }
         ).then(response => {
-          this.person = Object.assign(this.person, response.data)
-          this.$emit('input', this.person)
+          this.team = Object.assign(this.team, response.data)
+          this.$emit('input', this.team)
           this.loading = false
           this.edited = false
           this.created = false
         })
       },
-      updatePerson() {
+      updateTeam() {
         this.loading = true
         axios.put(
-          `people/${this.person._id}`,
+          `teams/${this.team._id}`,
           {
-            name: this.person.name,
-            skills: this.person.skills
+            name: this.team.name,
+            people: this.team.people.map(person => person._id)
           }
         ).then(response => {
           this.loading = false
           this.edited = false
         })
       },
-      deletePerson() {
+      deleteTeam() {
         this.loading = true
-        if (this.person._id) {
+        if (this.team._id) {
           axios.delete(
-            `people/${this.person._id}`,
+            `teams/${this.team._id}`,
           ).then(response => {
             this.loading = false
-            this.$emit('delete', this.person)
+            this.$emit('delete', this.team)
           })
         } else {
-          this.$emit('delete', this.person)
+          this.$emit('delete', this.team)
         }
+
       }
-    }
+    },
   }
 </script>
 

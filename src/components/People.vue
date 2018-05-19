@@ -2,64 +2,28 @@
   <v-container  grid-list-md >
     <v-layout row wrap>
       <template
-        v-for="person in people"
+        v-for="(person, i) in people"
       >
         <v-flex xs4>
-          <person :person="person"></person>
+          <person
+            :key="person._id"
+            :value="person"
+            @input="people[i] = $event"
+            @delete="remove"
+          ></person>
         </v-flex>
       </template>
     </v-layout>
-
-    <v-dialog v-model="dialog" persistent max-width="900">
-      <v-btn
-        dark
-        slot="activator"
-        color="pink"
-      >
-        <v-icon>add</v-icon>
-      </v-btn>
-      <v-card>
-        <v-card-title class="headline">Новый человек в проекте</v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-layout wrap>
-              <v-flex xs12>
-                <v-text-field
-                  label="Имя"
-                  v-model="newPerson.name"
-                ></v-text-field>
-              </v-flex>
-
-              <v-flex xs12>
-                <v-select
-                  v-model="newPerson.skills"
-                  :items="[]"
-                  label="Навыки"
-                  chips
-                  tags
-                >
-                  <template slot="selection" slot-scope="data">
-                    <v-chip
-                      :key="JSON.stringify(data.item)"
-                      class="chip--select-multi"
-                      @input="data.parent.selectItem(data.item)"
-                    >
-                      {{ data.item }}
-                    </v-chip>
-                  </template>
-                </v-select>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn flat @click.native="clearDialog">Отмена</v-btn>
-          <v-btn flat @click.native="createPerson">Создать</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
+    <v-btn
+      fab
+      fixed
+      right
+      bottom
+      @click="add"
+      color="pink"
+    >
+      <v-icon>add</v-icon>
+    </v-btn>
   </v-container>
 </template>
 
@@ -83,27 +47,24 @@
       }
     },
     methods: {
-      getPeople() {
+      get() {
         axios.get('people').then(response => {
           this.people = response.data._items
         })
       },
-      clearDialog() {
-        this.dialog = false
-        this.newPerson = {name: '', skills: []}
+      add() {
+        this.people.unshift({})
       },
-      createPerson() {
-        axios.post(
-          'people',
-          this.newPerson,
-        ).then(response => {
-          this.clearDialog()
-          this.getPeople()
-        })
-      }
+      remove(person) {
+        if (person._id) {
+          this.people = this.people.filter(p => p._id !== person._id)
+        } else {
+          this.people.splice(0, 1)
+        }
+      },
     },
     mounted() {
-      this.getPeople()
+      this.get()
     },
   }
 </script>
