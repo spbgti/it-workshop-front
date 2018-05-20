@@ -1,6 +1,6 @@
 import axs from "axios"
 
 export const axios = axs.create({
-  baseURL: 'http://localhost:5001/',
+  baseURL: process.env.BACKEND_ADR,
   timeout: 1000,
 })
