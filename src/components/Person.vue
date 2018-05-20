@@ -127,6 +127,12 @@
           {
             name: this.person.name,
             skills: this.person.skills
+          },
+          {
+            auth: {
+              username: this.$root.username,
+              password: this.$root.password
+            }
           }
         ).then(response => {
           this.person = Object.assign(this.person, response.data)
@@ -143,6 +149,12 @@
           {
             name: this.person.name,
             skills: this.person.skills
+          },
+          {
+            auth: {
+              username: this.$root.username,
+              password: this.$root.password
+            }
           }
         ).then(response => {
           this.loading = false

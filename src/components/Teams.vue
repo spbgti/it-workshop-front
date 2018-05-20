@@ -1,5 +1,5 @@
 <template>
-  <v-container  grid-list-md >
+  <v-container grid-list-md >
     <v-layout row wrap>
       <template
         v-for="(team, i) in teams"
@@ -30,11 +30,10 @@
 <script>
   import { axios } from '../http'
   import Team from './Team'
-  import PeopleSelect from './PeopleSelect'
 
   export default {
     name: 'teams',
-    components: { Team, PeopleSelect },
+    components: { Team },
     data() {
       return {
         teams: null,

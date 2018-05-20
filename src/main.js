@@ -15,5 +15,12 @@ new Vue({
   el: '#app',
   router,
   components: { App },
+  data() {
+    return {
+      auth: false,
+      username: '',
+      password: ''
+    }
+  },
   template: '<App/>'
 })

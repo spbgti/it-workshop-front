@@ -1,16 +1,7 @@
 <template>
   <div>
-    <v-chip
-      v-for="person in value"
-      close
-      :key="person._id"
-      class="chip--select-multi"
-      @input="remove(person)"
-    >
-      {{ person.name }}
-    </v-chip>
     <v-select
-      label="Члены команды"
+      :label="label"
       @input="add"
       :items="people"
       :value="search"
@@ -22,8 +13,16 @@
       return-object
       autocomplete
       :search-input.sync="search"
+    ></v-select>
+    <v-chip
+      v-for="person in value"
+      close
+      :key="person._id"
+      class="chip--select-multi"
+      @input="remove(person)"
     >
-    </v-select>
+      {{ person.name }}
+    </v-chip>
   </div>
 
 </template>
@@ -35,6 +34,9 @@
     props: {
       value: {
         type: Array,
+      },
+      label: {
+        type: String,
       },
     },
     methods: {

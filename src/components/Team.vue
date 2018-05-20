@@ -25,7 +25,10 @@
                 ></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <people-select v-model="team.people"></people-select>
+                <people-select
+                  label="Члены команды"
+                  v-model="team.people"
+                ></people-select>
               </v-flex>
             </v-layout>
           </v-flex>
@@ -79,11 +82,10 @@
 
 <script>
   import { axios } from '../http'
-  import People from "./People";
   import PeopleSelect from './PeopleSelect'
 
   export default {
-    components: { People, PeopleSelect },
+    components: { PeopleSelect },
     props: {
       value: {
         type: Object,
@@ -114,6 +116,12 @@
           {
             name: this.team.name,
             people: this.team.people.map(person => person._id)
+          },
+          {
+            auth: {
+              username: this.$root.username,
+              password: this.$root.password
+            }
           }
         ).then(response => {
           this.team = Object.assign(this.team, response.data)
@@ -130,6 +138,12 @@
           {
             name: this.team.name,
             people: this.team.people.map(person => person._id)
+          },
+          {
+            auth: {
+              username: this.$root.username,
+              password: this.$root.password
+            }
           }
         ).then(response => {
           this.loading = false
