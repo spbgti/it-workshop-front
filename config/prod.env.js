@@ -1,5 +1,5 @@
 'use strict'
 module.exports = {
-  BACKEND_ADR: '"https://dev-it-workshop.herokuapp.com/"',
+  BACKEND_ADR: '"https://master-it-workshop.herokuapp.com/"',
   NODE_ENV: '"production"'
 }
